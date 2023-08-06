@@ -1,0 +1,8 @@
+.vscode/
+
+Testing/
+Obj/*.o
+
+Out/*.png
+
+*.exe
