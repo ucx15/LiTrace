@@ -14,8 +14,7 @@ class Surface {
 		int pixel_count;
 		float aspect_ratio;
 
-		Surface(int w, int h);
-		~Surface();
+		Surface(Color* data, int w, int h);
 
 		void set_at(int x, int y, Color color);
 		void fill(Color color);

@@ -1,0 +1,14 @@
+#include "material.h"
+
+
+Material::Material() {
+	m_color = Color(0.f);
+	absorb = 0.f;
+	rough = 1.f;
+};
+
+Material::Material(Color color) {
+	m_color = color;
+	absorb = 0.f;
+	rough = 1.f;
+};

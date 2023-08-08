@@ -8,6 +8,10 @@ class Vec3 {
 		Vec3(float x_): x(x_), y(x_), z(x_) {}
 		Vec3(): x(0.f), y(0.f), z(0.f) {}
 
+		// Unary Operators
+		Vec3 operator-();
+
+		// Binary Operators
 		bool operator==(Vec3 v);
 		Vec3 operator+(Vec3 v);
 		Vec3 operator-(Vec3 v);

@@ -4,6 +4,8 @@
 #include "sphere.h"
 
 
+Sphere::Sphere() {}
+
 Sphere::Sphere(Vec3 loc_, float r_) {
 	loc = loc_;
 	r = r_;

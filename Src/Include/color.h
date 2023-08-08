@@ -14,9 +14,25 @@ class Color {
 		Color(): r(0.f), g(0.f), b(0.f) {}
 		Color(Vec3 v): r(v.x), g(v.y), b(v.z) {}
 		
+		void reset();
+
+		// Unary
+		Color operator-();
+
+		// Binary
 		bool operator==(Color c);
 		Color operator+(Color c);
 		Color operator-(Color c);
-		Color operator*(Color c);
 		Color operator*(float f);
+		Color operator*(Color c);
+		Color operator/(float f);
+		Color operator/(Color f);
+
+		// Assignment Operators
+		Color operator+=(Color c);
+		Color operator-=(Color c);
+		Color operator*=(float f);
+		Color operator*=(Color c);
+		Color operator/=(float f);
+		Color operator/=(Color c);
 };

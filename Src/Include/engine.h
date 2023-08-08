@@ -6,11 +6,13 @@
 
 class Engine {
 	public:	
-		int m_hit_count = 0;
+		uint64_t m_hit_count = 0;
+
 		Scene* m_scene;
 		Surface* m_surface;
 
 		Engine() {};
+		Color cast_ray(Ray ray, int depth);
 		void render();
-		void pipeline();
+		int pipeline();
 };

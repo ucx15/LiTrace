@@ -9,10 +9,15 @@
 
 class Scene {
 	public:
-		Camera *cam;
-		Light *light;
+		Camera* cam;
+		Light* light;
 
-		Sphere *sphere_obj;
+		int sphere_count = 0;
+		int plane_count = 0;
+
+		Sphere* sphere_array;  // sphere array 
+		// Plane* plane_array;  // plane array 
+		
 		Color background = Color();
 
 		Scene(Camera* cam, Light* light);

@@ -18,16 +18,11 @@
 #define ACES_f 0.238081f
 
 
-Surface::Surface(int w, int h): width(w), height(h) {
+Surface::Surface(Color* data, int w, int h): width(w), height(h) {
     pixel_count  = width * height;
     aspect_ratio = (float)width/height;
-    m_data = new Color[w * h];
+    m_data = data;
 }
-
-Surface::~Surface() {
-    delete[] m_data;
-}
-
 
 void Surface::set_at(int x, int y, Color color) {
     m_data[y*width + x] = color;

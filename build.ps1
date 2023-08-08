@@ -7,8 +7,8 @@
 
 # -------- BUILD SETTINGS --------
 $Rebuild_All   = $false  #for Rebuilding whole project
-# $specific_builds = "scene"
 $specific_builds = ""
+# $specific_builds = ""
 
 
 $C_FLAGS = "-Wall", "-Wextra", "-pedantic", "-std=c++20", "-s", "-O3", "-ffast-math"
@@ -47,7 +47,7 @@ if ($Rebuild_All) {
 	}
 }
 
-if ($specific_builds) {
+elseif ($specific_builds) {
 	Write-Output "Building: SPECIFIC"
 	foreach ($file in $specific_builds) {
 		Write-Output "    ${file}.cpp"

@@ -6,7 +6,5 @@
 int main() {
 	
 	Engine Runner = Engine();
-	Runner.pipeline();
-
-	return 0;
+	return Runner.pipeline();
 }
