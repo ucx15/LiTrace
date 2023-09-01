@@ -1,7 +1,7 @@
 #pragma once
 
-#include "surface.h"
-#include "scene.h"
+#include "surface.hpp"
+#include "scene.hpp"
 
 
 class Engine {

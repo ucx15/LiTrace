@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "vec.h"
+#include "vec.hpp"
 
 
 // Unary

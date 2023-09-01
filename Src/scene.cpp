@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "scene.hpp"
 
 
 Scene::Scene(Camera* cam_, Light* light_) {

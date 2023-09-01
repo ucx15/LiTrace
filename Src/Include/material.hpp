@@ -1,6 +1,6 @@
 # pragma once
 
-#include "color.h"
+#include "color.hpp"
 
 class Material {
 	public:

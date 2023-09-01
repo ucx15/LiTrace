@@ -1,9 +1,9 @@
 #include <math.h>
 #include <iostream>
 
-#include "camera.h"
-#include "settings.h"
-#include "utils.h"
+#include "camera.hpp"
+#include "settings.hpp"
+#include "utils.hpp"
 
 
 Camera::Camera(Vec3 loc_, Vec3 at_, float fov_): loc(loc_), at(at_), fov(fov_) {

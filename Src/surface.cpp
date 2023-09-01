@@ -6,8 +6,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#include "surface.h"
-#include "utils.h" 
+#include "surface.hpp"
+#include "utils.hpp" 
 
 
 #define ACES_a 0.0245786f

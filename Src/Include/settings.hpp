@@ -1,3 +1,5 @@
+# pragma once
+
 constexpr int MAX_MEM = 4;  // in GBs
 
 constexpr float FAR_CLIP = 1E8F;  // Far clip

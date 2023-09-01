@@ -3,13 +3,13 @@
 #include <math.h>
 
 
-#include "engine.h"
-#include "ray.h"
-#include "camera.h"
-#include "light.h"
-#include "utils.h"
-#include "material.h"
-#include "settings.h"
+#include "engine.hpp"
+#include "ray.hpp"
+#include "camera.hpp"
+#include "light.hpp"
+#include "utils.hpp"
+#include "material.hpp"
+#include "settings.hpp"
 
 
 Color Engine::cast_ray(Ray ray, int depth) {

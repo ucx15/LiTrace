@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "ray.h"
-#include "material.h"
+#include "ray.hpp"
+#include "material.hpp"
 
 class Sphere {
 	public:

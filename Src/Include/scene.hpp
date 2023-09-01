@@ -1,10 +1,10 @@
 #pragma once
 
-#include "color.h"
-#include "surface.h"
-#include "camera.h"
-#include "light.h"
-#include "sphere.h"
+#include "color.hpp"
+#include "surface.hpp"
+#include "camera.hpp"
+#include "light.hpp"
+#include "sphere.hpp"
 
 
 class Scene {

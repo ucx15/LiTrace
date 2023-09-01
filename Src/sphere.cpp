@@ -1,7 +1,7 @@
 
 #include <math.h>
 
-#include "sphere.h"
+#include "sphere.hpp"
 
 
 Sphere::Sphere() {}

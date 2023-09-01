@@ -1,7 +1,7 @@
 #pragma once
 
-#include "vec.h"
-#include "ray.h"
+#include "vec.hpp"
+#include "ray.hpp"
 
 class Camera {
 	private:

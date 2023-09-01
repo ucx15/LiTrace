@@ -1,4 +1,4 @@
-#include "light.h"
+#include "light.hpp"
 
 
 Light::Light(Vec3 loc_, float power_) {

@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-#include "color.h"
-#include "ray.h"
+#include "color.hpp"
+#include "ray.hpp"
 
 
 // Constants

@@ -6,7 +6,7 @@
 
 
 # -------- BUILD SETTINGS --------
-$Rebuild_All   = $false  #for Rebuilding whole project
+$Rebuild_All   = $true  #for Rebuilding whole project
 $specific_builds = ""
 
 
