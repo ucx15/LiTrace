@@ -11,7 +11,6 @@ class Engine {
 		Scene* m_scene;
 		Surface* m_surface;
 
-		Engine() {};
 		Color cast_ray(Ray ray, int depth);
 		void render();
 		int pipeline();

@@ -15,7 +15,6 @@
 #define ACES_c 0.000090537f
 #define ACES_d 0.983729f
 #define ACES_e 0.4329510f
-#define ACES_f 0.238081f
 
 
 Surface::Surface(Color* data, int w, int h): width(w), height(h) {
@@ -42,11 +41,18 @@ void Surface::fill_random() {
 }
 
 void Surface::aces() {
-    // Todo: implement ACES!
     for (int i=0; i<pixel_count; i++) {
-        m_data[i].r = (float) m_data[i].r/(1 + m_data[i].r);
-        m_data[i].g = (float) m_data[i].g/(1 + m_data[i].g);
-        m_data[i].b = (float) m_data[i].b/(1 + m_data[i].b);
+        m_data[i].r = std::max(0.f, (float)(m_data[i].r*(m_data[i].r+ACES_a) - ACES_b) / (m_data[i].r * (m_data[i].r*ACES_c + ACES_d) + ACES_e));
+        m_data[i].g = std::max(0.f, (float)(m_data[i].g*(m_data[i].g+ACES_a) - ACES_b) / (m_data[i].g * (m_data[i].g*ACES_c + ACES_d) + ACES_e));
+        m_data[i].b = std::max(0.f, (float)(m_data[i].b*(m_data[i].b+ACES_a) - ACES_b) / (m_data[i].b * (m_data[i].b*ACES_c + ACES_d) + ACES_e));
+    }
+}
+
+void Surface::reinhard() {
+    for (int i=0; i<pixel_count; i++) {
+        m_data[i].r = (float) m_data[i].r/(1+m_data[i].r);
+        m_data[i].g = (float) m_data[i].g/(1+m_data[i].g);
+        m_data[i].b = (float) m_data[i].b/(1+m_data[i].b);
     }
 }
 
@@ -58,8 +64,10 @@ void Surface::gamma() {
     }
 }
 
+
 void Surface::tonemap() {
-    // this->aces();    // Reinhard TMO
+    // this->aces();  // ACES TMO
+    this->reinhard();  // Reinhard TMO
     this->gamma();
 }
 

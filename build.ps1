@@ -8,7 +8,6 @@
 # -------- BUILD SETTINGS --------
 $Rebuild_All   = $false  #for Rebuilding whole project
 $specific_builds = ""
-# $specific_builds = ""
 
 
 $C_FLAGS = "-Wall", "-Wextra", "-pedantic", "-std=c++20", "-s", "-O3", "-ffast-math"

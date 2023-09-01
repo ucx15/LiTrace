@@ -9,31 +9,14 @@
 #include "light.h"
 #include "utils.h"
 #include "material.h"
-
-
-constexpr int MAX_MEM = 4;  // in GBs
-
-constexpr float FAR_CLIP = 1000000.0f;
-constexpr float EPSILON = 0.000001f;
-
-constexpr int W = 200;
-constexpr int H = 200;
-
-constexpr int SAMPLES = 128;        // Min: 1    Max: as req
-constexpr int RAY_BOUNCES = 2;    // Min: 1    Max: as req(Stack Limit)
-constexpr int AA_SAMPLES = 1;     // Antialiasing samples
-constexpr int UPDATE_FREQ = 4;  // in % of H
-
-// Flags
-constexpr bool GI = true;         // Global illumination
-constexpr bool SHADOWS = true;     // Shadows
+#include "settings.h"
 
 
 Color Engine::cast_ray(Ray ray, int depth) {
 	m_hit_count++;
 	float min_dist, hit_dist, sdw_hit_dist, l_dist_sq, l_ints;
-	Vec3 N, V, L, hit_pt;
-	
+	Vec3 N, V, L, hit_pt, reflection_vec;
+
 	bool is_sdw;
 	Color ray_color, sample_color;
 	Ray reflect_ray = Ray(Vec3(), Vec3());
@@ -63,6 +46,8 @@ Color Engine::cast_ray(Ray ray, int depth) {
 		V = ray.dir;
 		L = m_scene->light->loc - hit_pt;
 
+
+		// Shadow Testing
 		is_sdw = false;
 		if (SHADOWS) {
 			for (int sdwobj=0; sdwobj<m_scene->sphere_count; ++sdwobj) {
@@ -77,38 +62,47 @@ Color Engine::cast_ray(Ray ray, int depth) {
 			}
 		}
 
+
+		// Lambert Shading (Direct Illumination)
 		if (!is_sdw) {
-		// Direct Illumination
 			l_dist_sq = L.magnitude_sq();
 			l_ints = (m_scene->light->power * N.dot((L).normalize())) / (4.f * PI * l_dist_sq);
-			ray_color = hit_mat->m_color*l_ints;
+			ray_color = hit_mat->m_color * l_ints * (1-hit_mat->metallic);
 		}
 
-		//TODO: Specular Highlights
-		//TODO: Reflections
 
-		// Diffuse Reflections (Global Illumination)
+		//TODO: Specular Highlights
+
+
+		// (Global Illumination)
 		if (GI) {
 			reflect_ray.loc = hit_pt;
 			sample_color.reset();
-			if (depth < RAY_BOUNCES) {
-				for(int sample_cnt=0; sample_cnt<SAMPLES; ++sample_cnt) {				
-					reflect_ray.dir = rand_vec3_on_sphere(N);
-					sample_color += this->cast_ray(reflect_ray, depth++) * (N.dot(reflect_ray.dir));
-					// sample_color += this->cast_ray(reflect_ray, depth++);
-				}
 
+			// Diffuse Reflections
+			if (depth < RAY_BOUNCES) {
+				for(int sample_cnt=0; sample_cnt<SAMPLES; ++sample_cnt) {
+					// d - 2(d.n)n  ->  reflection of a vec d along vec n
+					reflection_vec = (V - N*2*V.dot(N));
+					reflect_ray.dir = (reflection_vec + (rand_vec3_on_sphere(N)*hit_mat->rough)).normalize();
+					
+					sample_color += this->cast_ray(reflect_ray, depth+1) * (N.dot(reflect_ray.dir));
+				}
 				ray_color +=  hit_mat->m_color * (sample_color/SAMPLES);
 			}
+
 		}
 	}
 
+
+	// Fallback if ray hits nothing (return world background color)
 	else {
 		ray_color = m_scene->background;
 	}
 
 	return ray_color;
 } 
+
 
 void Engine::render() {
 	m_surface->fill(m_scene->background);
@@ -119,35 +113,35 @@ void Engine::render() {
 	const float cell_h = 1.f/h;
 	const float cell_w = 1.f/w;
 	const float cx = cell_w/2.f;
-	const float cy = cell_h/2.f;
 
 	float nsx, nsy;  // Normal Space Coordinates
 
 	Color pixel_color;
+	Ray cam_ray = Ray();
 
-	Ray cam_ray = Ray(m_scene->cam->loc, Vec3());
-	
+
 	for (int y=0; y<h; ++y) {
-		nsy = cy + 1 - 2*(float)y/(h-1);
+		nsy = 1 - 2 * (float)y/(h-1);
 		for (int x=0; x<w; ++x) {
-			nsx = cx + m_surface->aspect_ratio * (2 * (float)x/(w-1) - 1);
+			nsx = 1 - 2 * (float)x/(w-1);
 
-			// TODO: To be replaced with camera object producing rays to be shot
-			cam_ray.dir = Vec3(nsx, nsy, -.8f).normalize();
+			// Generating Camera ray
+			cam_ray = m_scene->cam->gen_ray(nsx, nsy);
 
+			// AntiAliasing
 			pixel_color.reset();
 			for (int sample=0; sample<AA_SAMPLES; sample++) {
-				// cam_ray.dir = cam_ray.dir + (rand_vec3_bi()*cx);
+				cam_ray.dir = cam_ray.dir + rand_vec3_bi()*cx;
 				pixel_color += this->cast_ray(cam_ray, 0);
 			}
 			m_surface->set_at(x,y, pixel_color/AA_SAMPLES);
 		}
-
+	
 		if (!(y%UPDATE_FREQ)) {
-			std::cout << "Rendered: " << y << "\r";
+			std::cout << float(100.f*y)/H << '\r';
 		}
+
 	}
-	std::cout << '\r';
 }
 
 
@@ -184,30 +178,37 @@ int Engine::pipeline() {
 	Surface temp_surface = Surface(pixels, W, H);
 	m_surface = &temp_surface;
 
-	Camera temp_cam = Camera(Vec3(0), Vec3(0, 0, -1));
-	Light temp_light = Light(Vec3(2, 4, 0), 800);
+	Camera temp_cam = Camera(Vec3(0, 0, 8.f), Vec3(0, 0, -1), FOV);
+	Light temp_light = Light(Vec3(0, 10, 2), 3E3f);
 
 	Scene temp_scene = Scene(&temp_cam, &temp_light);
 	m_scene = &temp_scene;
-	// m_scene->background = Color(1.f, 1.f, 1.f)/2.f;
-	m_scene->background = Color(.008f);
+	m_scene->background = Color(.01f);
 
-	m_scene->sphere_count = 3;
+	m_scene->sphere_count = 4;
 	Sphere* spheres = new Sphere[m_scene->sphere_count];
 
 	m_scene->sphere_array = spheres;
 	
-	spheres[0] = Sphere(Vec3(0, 0, -10), 4);
-	spheres[1] = Sphere(Vec3(1, 2, -4), .35);
-	spheres[2] = Sphere(Vec3(0, -10004, -10), 10000);
+	spheres[0] = Sphere(Vec3(-10, 0, -10), 5);
+	spheres[1] = Sphere(Vec3(  0, 0, -10), 5);
+	spheres[2] = Sphere(Vec3( 10, 0, -10), 5);
+	spheres[3] = Sphere(Vec3(0, -10005, -10), 10000);
 
-	Material mat_white = Material(Color(1, 1, 1));
-	Material mat_red   = Material(Color(1, 0, 0));
-	Material mat_cyan  = Material(Color(.1f, .35f, 1.f));
+	Material mat_lft   = Material(Color(1, 0.01f, 0));
+	Material mat_mid = Material(Color(1, 1, 1));
+	Material mat_rgt  = Material(Color(0, 0.1f, 1));
+	Material mat_grnd = Material(Color(1, 1, 1));
 
-	spheres[0].material = &mat_white;
-	spheres[1].material = &mat_red;
-	spheres[2].material = &mat_cyan;
+	mat_mid.metallic = 1.f;
+	mat_mid.rough = 0.1f;
+
+	mat_rgt.rough = .1f;
+
+	spheres[0].material = &mat_lft;
+	spheres[1].material = &mat_mid;
+	spheres[2].material = &mat_rgt;
+	spheres[3].material = &mat_grnd;
 
 
 	// <-------- Rendering -------->

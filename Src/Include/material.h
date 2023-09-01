@@ -7,6 +7,7 @@ class Material {
 		Color m_color;
 		float absorb;
 		float rough;
+		float metallic;
 
 		Material();
 		Material(Color color);

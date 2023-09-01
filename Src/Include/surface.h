@@ -21,6 +21,7 @@ class Surface {
 		void fill_random();
 		
 		void aces();
+		void reinhard();
 		void gamma();
 		void tonemap();
 
