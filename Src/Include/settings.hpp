@@ -10,7 +10,7 @@ constexpr int W = 860;
 constexpr int H = 480;
 constexpr float AR = (float)W/H;  // Aspect Ratio of image
 
-constexpr int SAMPLES = 32;        // Min: 1    Max: as req
+constexpr int SAMPLES = 2;        // Min: 1    Max: as req
 constexpr int RAY_BOUNCES = 2;    // Min: 1    Max: as req(Stack Limit)
 constexpr int AA_SAMPLES = 2;     // Antialiasing samples
 constexpr int UPDATE_FREQ = 20;  // in % of H
