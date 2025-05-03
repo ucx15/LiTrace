@@ -110,7 +110,7 @@ void Engine::render() {
 	const int w = m_surface->width;
 	const int h = m_surface->height;
 
-	const float cell_h = 1.f/h;
+	// const float cell_h = 1.f/h;
 	const float cell_w = 1.f/w;
 	const float cx = cell_w/2.f;
 

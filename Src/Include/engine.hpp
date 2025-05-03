@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "surface.hpp"
 #include "scene.hpp"
 
