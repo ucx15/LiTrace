@@ -6,7 +6,7 @@
 
 
 # -------- BUILD SETTINGS --------
-$buildAll   = $true  #for Rebuilding whole project
+$buildAll   = $false  #for Rebuilding whole project
 
 # Compiler and Linker flags
 $compilerFlags = "-std=c++20", "-Wall", "-Wextra", "-Werror", "-Wpedantic","-Wno-missing-field-initializers", "-Wshadow", "-O2"

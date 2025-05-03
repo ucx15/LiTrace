@@ -27,7 +27,7 @@ Color Engine::cast_ray(Ray ray, int depth) {
 	//TODO: Move to a seperate function
 	// Finding the closest sphere
 	min_dist = FAR_CLIP;
-	closest_sphere = NULL;
+	closest_sphere = nullptr;
 
 	for (int i=0; i<m_scene->sphere_count; ++i) {
 		hit_dist = (m_scene->sphere_array[i]).intersect(ray);

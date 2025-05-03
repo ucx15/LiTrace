@@ -34,7 +34,7 @@ void Surface::fill(Color color) {
 }
 
 void Surface::fill_random() {
-	srand(time(NULL));
+	srand(time(0));
 	for (int i = 0; i < pixel_count; ++i) {
 		m_data[i] = rand_color();
 	}
@@ -73,7 +73,7 @@ void Surface::tonemap() {
 
 int Surface::save_float_buffer(const char* file_path) {
     FILE *file = fopen(file_path, "wb");
-    if (file == NULL) {
+    if (file == nullptr) {
         return -1;
     }
 
@@ -89,7 +89,7 @@ int Surface::save_float_buffer(const char* file_path) {
 
 int Surface::save_ppm(const char* file_path) {
     FILE *file = fopen(file_path, "wb");
-    if (file == NULL) {
+    if (file == nullptr) {
         return -1;
     }
 
