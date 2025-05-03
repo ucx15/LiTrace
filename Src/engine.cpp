@@ -85,7 +85,7 @@ Color Engine::cast_ray(Ray ray, int depth) {
 					// d - 2(d.n)n  ->  reflection of a vec d along vec n
 					reflection_vec = (V - N*2*V.dot(N));
 					reflect_ray.dir = (reflection_vec + (rand_vec3_on_sphere(N)*hit_mat->rough)).normalize();
-					
+
 					sample_color += this->cast_ray(reflect_ray, depth+1) * (N.dot(reflect_ray.dir));
 				}
 				ray_color +=  hit_mat->m_color * (sample_color/SAMPLES);
@@ -101,7 +101,7 @@ Color Engine::cast_ray(Ray ray, int depth) {
 	}
 
 	return ray_color;
-} 
+}
 
 
 void Engine::render() {
@@ -136,7 +136,7 @@ void Engine::render() {
 			}
 			m_surface->set_at(x,y, pixel_color/AA_SAMPLES);
 		}
-	
+
 		if (!(y%UPDATE_FREQ)) {
 			std::cout << float(100.f*y)/H << '\r';
 		}
@@ -150,7 +150,7 @@ int Engine::pipeline() {
 	NOTE:
 	 - All memory must be allocated and deallocated in this function only
 	   NOT inside any functions called here
-	 
+
 	 - All variables must be referred by direct pointers,
    		NOT by scene pointers in this function.
 	*/
@@ -189,7 +189,7 @@ int Engine::pipeline() {
 	Sphere* spheres = new Sphere[m_scene->sphere_count];
 
 	m_scene->sphere_array = spheres;
-	
+
 	spheres[0] = Sphere(Vec3(-10, 0, -10), 5);
 	spheres[1] = Sphere(Vec3(  0, 0, -10), 5);
 	spheres[2] = Sphere(Vec3( 10, 0, -10), 5);

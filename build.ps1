@@ -6,13 +6,17 @@
 
 
 # -------- BUILD SETTINGS --------
-$build_all   = $true  #for Rebuilding whole project
-$build_specific = ""
+$buildAll   = $true  #for Rebuilding whole project
 
-$C_FLAGS = "-Wall", "-Wextra", "-pedantic", "-std=c++20", "-s", "-O3", "-ffast-math"
+# Compiler and Linker flags
+$compilerFlags = "-std=c++20", "-Wall", "-Wextra", "-Werror", "-Wpedantic","-Wno-missing-field-initializers", "-Wshadow", "-O2"
+$linkerFlags = "-s"
+
 
 $out_file = "LiTrace.exe"
-$main_files = "Src/main.cpp", "src/engine.cpp"
+
+$srcFiles = "main", "engine", "camera", "color", "light", "material", "ray", "scene", "sphere", "surface", "utils", "vec"
+
 $include_dir = "Src/Include/"
 $lib_inc_path = "Lib/"
 
@@ -26,55 +30,46 @@ if (Test-Path ./$out_file) {
 
 
 # Compiling
-[string[]]$src_files = (Get-ChildItem Src/ -File).BaseName
+$isCompiled = $true
+foreach ($srcFile in $srcFiles) {
 
-if ($build_all) {
-	Write-Output "Building: ALL"
-	foreach ($file in $src_files) {
+	$isModified = $true
+	$sourceModifiedDate = (Get-Item "Src/${srcFile}.cpp").LastWriteTime
+	if ( Test-Path "Obj/${srcFile}.o" ) {
+		$targetModifiedDate = (Get-Item "Obj/${srcFile}.o").LastWriteTime
+		$isModified = ($sourceModifiedDate -gt $targetModifiedDate)
+	}
 
-		if ("Src/${file}.cpp" -notin $main_files) {
-			Write-Output "    ${file}.cpp"
+	# compile if source file is modified
+	if (($isModified -eq $true) -or ($buildAll -eq $true)) {
+		Write-Output "${srcFile}.cpp    ${sourceModifiedDate}"
 
-			if (Test-Path "Obj/${file}.o") {
-				Remove-Item Obj/${file}.o
-			}
+		# removing previous object file
+		Remove-Item Obj/${srcFile}.o  -Force -ErrorAction SilentlyContinue
 
-			g++ $C_FLAGS  -I $include_dir -I $lib_inc_path -o Obj/${file}.o -c Src/${file}.cpp
+		g++ $compilerFlags  -I $include_dir -I $lib_inc_path -o Obj/${srcFile}.o -c Src/${srcFile}.cpp
+
+
+		if ($LASTEXITCODE -ne 0) {
+			Write-Error "failed to compile!"
+			$isCompiled = $false
 		}
 	}
 }
 
-elseif ($build_specific) {
-	Write-Output "Building: SPECIFIC"
-	foreach ($file in $build_specific) {
-		Write-Output "    ${file}.cpp"
-
-		if (Test-Path "Obj/${file}.o") {
-			Remove-Item Obj/${file}.o
-		}
-
-		g++ $C_FLAGS  -I $include_dir -I $lib_inc_path -o Obj/${file}.o -c Src/${file}.cpp
-
-	}
-}
-else {
-	Write-Output "Building: NONE"
+if ($isCompiled -eq $false) {
+	Write-Host "Compilation failed!"
+	exit 1
 }
 
 # Linking
-$obj_files = Get-ChildItem -Path Obj/
+g++ $linkerFlags Obj/*.o -o $out_file
 
-Write-Output "Linking"
-g++ $main_files $obj_files $C_FLAGS -o $out_file -I $include_dir 
+if ($LASTEXITCODE -ne 0) {
+	Write-Host "Linking failed!"
+	exit 1
+}
 
 
 # Running current build
-
-if (Test-Path ./$out_file) {
-	Write-Output "Build Successfully"
-	Write-Output ""
-	& ./$out_file
-}
-else {
-	Write-Output "ERROR in Building!"
-}
+& ./$out_file

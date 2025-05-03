@@ -5,7 +5,7 @@
 
 
 class Engine {
-	public:	
+	public:
 		uint64_t m_hit_count = 0;
 
 		Scene* m_scene;
