@@ -4,10 +4,10 @@
 
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "stb_image_write_clean.h"
 
 #include "surface.hpp"
-#include "utils.hpp" 
+#include "utils.hpp"
 
 
 #define ACES_a 0.0245786f
@@ -83,7 +83,7 @@ int Surface::save_float_buffer(const char* file_path) {
 
     fwrite(m_data, sizeof(float)*size, 1, file);
     fclose(file);
-    
+
     return 0;
 }
 
@@ -98,7 +98,7 @@ int Surface::save_ppm(const char* file_path) {
 
     int j = 0;
     for (int i = 0; i < pixel_count; i++) {
-    
+
         bytes[j++] = std::max(0, std::min(0xff, int(255 * m_data[i].r)));  // R
         bytes[j++] = std::max(0, std::min(0xff, int(255 * m_data[i].g)));  // G
         bytes[j++] = std::max(0, std::min(0xff, int(255 * m_data[i].b)));  // B
