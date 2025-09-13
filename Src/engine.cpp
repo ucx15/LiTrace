@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <math.h>
 
@@ -138,10 +139,11 @@ void Engine::render() {
 		}
 
 		if (!(y%UPDATE_FREQ)) {
-			std::cout << float(100.f*y)/H << '\r';
+			std::cout << "\rProgress: " << std::fixed << std::setprecision(1) << float(100.f*y)/H << "%" << std::flush;
 		}
 
 	}
+	std::cout << "\rRendering complete: 100.0%\n" << std::flush;
 }
 
 
